@@ -36,7 +36,7 @@ class MySaveFileThread(threading.Thread):
         chat_id = update.effective_chat.id
         user_id = update.effective_user.id
         gd = GoogleDrive(user_id)
-        message = '╭──────⌈ 📥 Copying In Progress ⌋──────╮\n│\n├ 📂 Target Directory：{}\n'.format(dest_folder['path'])
+        message = '──────<i>Copying In Progress</i>──────\n───────────────────────────────\n<b>📂 Target Directory</b>：{}\n'.format(dest_folder['path'])
         inline_keyboard = InlineKeyboardMarkup(
             [[InlineKeyboardButton(text=f'🚫 Stop', callback_data=f'stop_task,{thread_id}')]])
 
@@ -153,14 +153,14 @@ class MySaveFileThread(threading.Thread):
                         progress_checked_files = int(match_checked_files.group(1))
                         progress_total_check_files = int(match_checked_files.group(2))
                     progress_max_percentage_10 = max(progress_size_percentage_10, progress_file_percentage_10)
-                    message_progress = '├──────⌈ Made with Love by Dr.Caduceus & MsGsuite⌋──────' \
-                                       '├ 🗂 Source : <a href="https://drive.google.com/open?id={}">{}</a>\n│\n' \
-                                       '├ ✔️ Checks： <code>{} / {}</code>\n' \
-                                       '├ 📥 Transfers： <code>{} / {}</code>\n' \
-                                       '├ 📦 Size：<code>{} / {}</code>\n{}' \
-                                       '├ ⚡️Speed：<code>{}</code> \n├⏳ ETA: <code>{}</code>\n' \
-                                       '├ ⛩ Progress：[<code>{}</code>] {: >2}%\n│\n' \
-                                       '├──────⌈ CloneBot V2🔥 ⌋──────' \
+                    message_progress = '<b>Made with Love by Dr.Caduceus & MsGsuite</b>\n' \
+                                       '<b>Source</b> : <a href="https://drive.google.com/open?id={}">{}</a>\n\n' \
+                                       '<b>Checks</b>： <code>{} / {}</code>\n' \
+                                       '<b>Transfers</b>： <code>{} / {}</code>\n' \
+                                       '<b>Size</b>：<code>{} / {}</code>\n{}' \
+                                       'Speed：<code>{}</code> \n├⏳ ETA: <code>{}</code>\n' \
+                                       '<b>Progress</b>：[<code>{}</code>] {: >2}%\n\n' \
+                                       '<b>CloneBot V2🔥</b>──────' \
                         .format(
                         folder_id,
                         html.escape(destination_path),
@@ -174,13 +174,13 @@ class MySaveFileThread(threading.Thread):
                         progress_speed,
                         progress_eta,
                         '●' * progress_file_percentage_10 + '○' * (
-                                progress_max_percentage_10 - progress_file_percentage_10) + ' ' * (
+                                progress_max_percentage_10 - progress_file_percentage_10) + '○' * (
                                 10 - progress_max_percentage_10),
                         progress_file_percentage)
 
                     match = re.search(r'Failed to Copy: Failed to Make Directory in the Destination', output)
                     if match:
-                        message_progress = '{}\n│<code>Destination Write Permission Error.\n Please ensure that you have rights to upload files to the Destination.</code>'.format(message_progress)
+                        message_progress = '{}\n<code>Destination Write Permission Error.\n Please ensure that you have rights to upload files to the Destination.</code>'.format(message_progress)
                         temp_message = '{}{}'.format(message, message_progress)
                         # logger.info('Write permission error, please confirm permission'.format())
                         try:
@@ -189,7 +189,7 @@ class MySaveFileThread(threading.Thread):
                                                           disable_web_page_preview=True,
                                                           reply_markup=inline_keyboard)
                         except Exception as e:
-                            logger.debug('Error {} occurs when editing message {} for user {} in chat {}: \n│{}'.format(
+                            logger.debug('Error {} occurs when editing message {} for user {} in chat {}: \n{}'.format(
                                 e, message_id, user_id, chat_id, temp_message))
                         process.terminate()
                         self.critical_fault = True
@@ -197,7 +197,7 @@ class MySaveFileThread(threading.Thread):
 
                     match = re.search(r"Couldn't List Directory", output)
                     if match:
-                        message_progress = '{}\n│<code>Source Read permission Error. \n Please ensure that you have rights to read files from the Source Link</code>'.format(message_progress)
+                        message_progress = '{}\n<code>Source Read permission Error. \n Please ensure that you have rights to read files from the Source Link</code>'.format(message_progress)
                         temp_message = '{}{}'.format(message, message_progress)
                         # logger.info('Read permission error, please confirm the permission：')
                         try:
@@ -206,7 +206,7 @@ class MySaveFileThread(threading.Thread):
                                                           disable_web_page_preview=True,
                                                           reply_markup=inline_keyboard)
                         except Exception as e:
-                            logger.debug('Error {} occurs when editing message {} for user {} in chat {}: \n│{}'.format(
+                            logger.debug('Error {} occurs when editing message {} for user {} in chat {}: \n{}'.format(
                                 e, message_id, user_id, chat_id, temp_message))
                         process.terminate()
                         self.critical_fault = True
@@ -222,33 +222,33 @@ class MySaveFileThread(threading.Thread):
                                                               reply_markup=inline_keyboard)
                             except Exception as e:
                                 logger.debug(
-                                    'Error {} occurs when editing message {} for user {} in chat {}: \n│{}'.format(
+                                    'Error {} occurs when editing message {} for user {} in chat {}: \n{}'.format(
                                         e, message_id, user_id, chat_id, temp_message))
                             message_progress_last = message_progress
                             progress_update_time = datetime.datetime.now()
 
                     if self.critical_fault:
-                        message_progress = '{}\n│\n│ You have terminated the Cloning Process'.format(message_progress)
+                        message_progress = '{}\n\n You have terminated the Cloning Process'.format(message_progress)
                         process.terminate()
                         break
 
             rc = process.poll()
-            message_progress_heading, message_progress_content = message_progress.split('\n│', 1)
+            message_progress_heading, message_progress_content = message_progress.split('\n', 1)
             link_text = 'Unable to fetch Google Drive Link.'
             try:
                 link = gd.get_folder_link(dest_folder['folder_id'], destination_path)
                 if link:
-                    link_text = '\n│ \n│      👉 <a href="{}">Google Drive Link</a> 👈'.format(link)
+                    link_text = '\n \n      👉 <a href="{}">Google Drive Link</a> 👈'.format(link)
             except Exception as e:
                 logger.info(str(e))
 
             if self.critical_fault is True:
-                message = '{}{} ❌\n│{}\n│{}\n│'.format(message, message_progress_heading, message_progress_content,
+                message = '{}{} ❌\n{}\n{}\n'.format(message, message_progress_heading, message_progress_content,
                                                      link_text)
             elif progress_file_percentage == 0 and progress_checked_files > 0:
-                message = '{}{} ✅\n│ File Already Exists in the Destination!\n│ {}\n│'.format(message, message_progress_heading, link_text)
+                message = '{}{} ✅\n File Already Exists in the Destination!\n {}\n'.format(message, message_progress_heading, link_text)
             else:
-                message = '{}{}{}\n│{}\n│{}\n│\n│'.format(message,
+                message = '{}{}{}\n{}\n{}\n\n'.format(message,
                                                       message_progress_heading,
                                                       '✅' if rc == 0 else '❌',
                                                       message_progress_content,
@@ -259,7 +259,7 @@ class MySaveFileThread(threading.Thread):
                                               parse_mode=ParseMode.HTML, disable_web_page_preview=True,
                                               reply_markup=inline_keyboard)
             except Exception as e:
-                logger.debug('Error {} occurs when editing message {} for user {} in chat {}: \n│{}'.format(
+                logger.debug('Error {} occurs when editing message {} for user {} in chat {}: \n{}'.format(
                     e, message_id, user_id, chat_id, message))
 
             if self.critical_fault is True:
@@ -270,12 +270,12 @@ class MySaveFileThread(threading.Thread):
             context.bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=message,
                                           parse_mode=ParseMode.HTML, disable_web_page_preview=True)
         except Exception as e:
-            logger.debug('Error {} occurs when editing message {} for user {} in chat {}: \n│{}'.format(
+            logger.debug('Error {} occurs when editing message {} for user {} in chat {}: \n{}'.format(
                 e, message_id, user_id, chat_id, message))
         update.callback_query.message.edit_reply_markup(reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton(text='Done', callback_data='cancel')]]))
 
-        logger.debug('User {} has finished task {}: \n│{}'.format(user_id, thread_id, message))
+        logger.debug('User {} has finished task {}: \n{}'.format(user_id, thread_id, message))
         tasks = thread_pool.get(user_id, None)
         if tasks:
             for t in tasks:
