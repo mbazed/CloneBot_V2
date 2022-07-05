@@ -36,7 +36,7 @@ class MySaveFileThread(threading.Thread):
         chat_id = update.effective_chat.id
         user_id = update.effective_user.id
         gd = GoogleDrive(user_id)
-        message = '──────<i>Copying In Progress</i>──────\n───────────────────────────────\n<b>📂 Target Directory</b>：{}\n'.format(dest_folder['path'])
+        message = '────────<i><b>Copying In Progress</b></i>────────\n\n<b>📂 Target Directory</b>：{}\n'.format(dest_folder['path'])
         inline_keyboard = InlineKeyboardMarkup(
             [[InlineKeyboardButton(text=f'🚫 Stop', callback_data=f'stop_task,{thread_id}')]])
 
@@ -153,14 +153,14 @@ class MySaveFileThread(threading.Thread):
                         progress_checked_files = int(match_checked_files.group(1))
                         progress_total_check_files = int(match_checked_files.group(2))
                     progress_max_percentage_10 = max(progress_size_percentage_10, progress_file_percentage_10)
-                    message_progress = '<b>Made with Love by Dr.Caduceus & MsGsuite</b>\n' \
-                                       '<b>Source</b> : <a href="https://drive.google.com/open?id={}">{}</a>\n\n' \
+                    message_progress = '<b>Source</b> : <a href="https://drive.google.com/open?id={}">{}</a>\n\n' \
                                        '<b>Checks</b>： <code>{} / {}</code>\n' \
                                        '<b>Transfers</b>： <code>{} / {}</code>\n' \
                                        '<b>Size</b>：<code>{} / {}</code>\n{}' \
-                                       'Speed：<code>{}</code> \n├⏳ ETA: <code>{}</code>\n' \
+                                       '<b>Speed</b>：<code>{}</code> \n<b>ETA</b>: <code>{}</code>\n' \
                                        '<b>Progress</b>：[<code>{}</code>] {: >2}%\n\n' \
-                                       '<b>CloneBot V2🔥</b>──────' \
+                                       '───────────<b>CloneBot V2🔥</b>───────────\n' \
+                                       '<b>Made with Love by Dr.Caduceus & MsGsuite</b>\n' \
                         .format(
                         folder_id,
                         html.escape(destination_path),
@@ -238,7 +238,7 @@ class MySaveFileThread(threading.Thread):
             try:
                 link = gd.get_folder_link(dest_folder['folder_id'], destination_path)
                 if link:
-                    link_text = '\n \n      👉 <a href="{}">Google Drive Link</a> 👈'.format(link)
+                    link_text = '\n \n───────👉 <a href="{}">Google Drive Link</a> 👈───────'.format(link)
             except Exception as e:
                 logger.info(str(e))
 
@@ -265,7 +265,7 @@ class MySaveFileThread(threading.Thread):
             if self.critical_fault is True:
                 break
 
-        message += '\n╰──────⌈ ✅ Cloning Process Finished ! ✅ ⌋──────╯'
+        message += '\n────Cloning Process Finished ! ✅────'
         try:
             context.bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=message,
                                           parse_mode=ParseMode.HTML, disable_web_page_preview=True)
