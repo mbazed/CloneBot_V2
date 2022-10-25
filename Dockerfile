@@ -1,1 +1,2 @@
-FROM ghcr.io/thecaduceus/clonebot_v2:main
+# Sync old with new
+FROM ghcr.io/thecaduceus/cbv2:main

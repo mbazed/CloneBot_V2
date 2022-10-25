@@ -153,14 +153,14 @@ class MySaveFileThread(threading.Thread):
                         progress_checked_files = int(match_checked_files.group(1))
                         progress_total_check_files = int(match_checked_files.group(2))
                     progress_max_percentage_10 = max(progress_size_percentage_10, progress_file_percentage_10)
-                    message_progress = '<b>Source</b> : <a href="https://drive.google.com/open?id={}">{}</a>\n\n' \
-                                       '<b>Checks</b>： <code>{} / {}</code>\n' \
-                                       '<b>Transfers</b>： <code>{} / {}</code>\n' \
-                                       '<b>Size</b>：<code>{} / {}</code>\n{}' \
-                                       '<b>Speed</b>：<code>{}</code> \n<b>ETA</b>: <code>{}</code>\n' \
-                                       '<b>Progress</b>：[<code>{}</code>] {: >2}%\n\n' \
-                                       '───────────<b>CloneBot V2🔥</b>───────────\n' \
-                                       '<b>Made with Love by Dr.Caduceus & MsGsuite</b>\n' \
+                    message_progress = '├──────⌈ Made with Love by Dr.Caduceus & MsGsuite⌋──────' \
+                                       '├ 🗂 Source : <a href="https://drive.google.com/open?id={}">{}</a>\n│\n' \
+                                       '├ ✔️ Checks： <code>{} / {}</code>\n' \
+                                       '├ 📥 Transfers： <code>{} / {}</code>\n' \
+                                       '├ 📦 Size：<code>{} / {}</code>\n{}' \
+                                       '├ ⚡️Speed：<code>{}</code> \n├⏳ ETA: <code>{}</code>\n' \
+                                       '├ ⛩ Progress：[<code>{}</code>] {: >2}%\n│\n' \
+                                       '├──────⌈ CloneBot V2🔥 ⌋──────' \
                         .format(
                         folder_id,
                         html.escape(destination_path),
